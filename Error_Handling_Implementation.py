@@ -99,7 +99,7 @@ def journey_matches_settings(journey, settings):
     return True
 
 
-def apply_custom_filter(journeys, settings):
+def apply_custom_filter(journeys, settings): #Might delete this due to redundancy
     """
     Keep only journeys that satisfy the user's custom conditions.
     """
@@ -112,7 +112,7 @@ def apply_custom_filter(journeys, settings):
     return filtered
 
 
-def customization_bonus(journey, settings):
+def customization_bonus(journey, settings): #Might delete this due to redundancy
     """
     Lower score is better.
     This function adjusts ranking without replacing the base preference.
@@ -128,7 +128,7 @@ def customization_bonus(journey, settings):
     return bonus
 
 
-def route_score_with_customization(journey, preference, settings):
+def route_score_with_customization(journey, preference, settings): #Might delete this due to redundancy
     """
     Combined scoring:
     - base score depends on user preference
@@ -146,7 +146,7 @@ def route_score_with_customization(journey, preference, settings):
     return base + customization_bonus(journey, settings)
 
 
-def rank_journeys_with_customization(journeys, preference, settings):
+def rank_journeys_with_customization(journeys, preference, settings): #Might delete this due to redundancy
     """
     Rank only the valid journeys after filtering.
     """
