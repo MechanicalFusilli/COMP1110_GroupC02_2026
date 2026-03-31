@@ -1,0 +1,29 @@
+N
+hku
+cen
+ken
+har
+tst
+tsq
+cwb
+tks
+mgk
+S
+tks hku mtr is 1
+cwb cen mtr is 1
+mgk tst mtr tw 1
+ken hku mtr is 1
+tst cen mtr tw 1
+cen hku mtr is 1
+cen hku bus 30x 1
+tks hku bus 33x 1
+har hku bus 973 1
+mgk hku bus 970 1
+mgk hku bus 970x 1
+cen hku mbus 8x 1
+cen hku mbus 22 1
+cwb hku mbus 10 1
+cwb hku mbus 31 1
+ken hku walk n 1
+har tst walk n 1
+tsq cwb walk n 1
