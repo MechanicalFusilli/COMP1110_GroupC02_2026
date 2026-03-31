@@ -175,7 +175,6 @@ def remove_duplicate_journeys(journeys):
 
 def safe_generate_and_rank(network, origin, destination, preference, settings, generator_function):
     """
-    Main wrapper for Ezekiel's part.
     Handles validation, filtering, ranking, and algorithm-related errors.
     """
     try:
