@@ -1,5 +1,9 @@
 from collections import defaultdict 
 import heapq 
+import sys
+import copy
+
+INT_MAX = sys.maxsize  
 #default dict provides an adjacency list implementation, which stores edges and their weights
 #heapq provides a min-heap implementation, which is used as a priority queue that accesses elements in O(1)
 
@@ -47,25 +51,77 @@ def routetest(start, end, e):
         return False
 
 def djikstras(start, end, e):
-    route = set()
+    if start == end:
+        return [0, [start]]
     if (not routetest(start, end, e)):
-        return ["No possible routes"]
+        return [INT_MAX, ["No Route"]]
     heap = []
-    heapq.heappush(heap, (0, start))
+    heapq.heappush(heap, (0, [start]))
     while heap:
-        dist, point = heapq.heappop(heap)
-        if point == end:
-            route.add(dist)
+        dist, route = heapq.heappop(heap)
+        if route[-1] == end:
+            return [dist, route]
+        for dest,w in e[route[-1]]:
+            newroute = list(route)
+            newroute.append(dest)
+            heapq.heappush(heap, (w + dist, newroute))
+
+def yens(start, end ,e):
+    paths = []  
+    #paths is a list of lists. Each list it contains follows the format [Distance Number, [Sequential Route Order]]
+    paths.append(djikstras(start, end ,e))
+    if paths[-1][1][0] == "No Route":
+        return -1
+    for i in range(1,3):
+        potential = []
+        for j in range(len(paths[-1][1])-1):
+            spur = paths[-1][1][j]
+            root = paths[-1][1][:j+1]
+            newe = copy.deepcopy(e)
+
+            rootw, _ = djikstras(start, spur, e)
+
+            #remove instances of previous paths
+            for dist, path in paths:
+                if path[:j+1] == root and len(path) > j + 1:
+                    u = path[j]
+                    v = path[j+1]
+                    newe[u] = [edge for edge in newe[u] if edge[0] != v]
+            #remove root nodes
+            for node in root[:-1]:
+                newe[node] = []
+
+            w, r = djikstras(spur, end, newe)
+            if r[0] == "No Route":
+                continue
+            path = root[:-1] + r
+            heapq.heappush(potential, [w + rootw, path])
+        if potential:
+            dist, new_path = heapq.heappop(potential)
+            paths.append([dist, new_path])
+        else:
             break
-            #note: if there isn't any possible route, this implementation will loop forever. will fix in the future by running bfs to check if its possible first
-        for dest,w in e[point]:
-            heapq.heappush(heap, (w + dist, dest))
-    return route
+    return paths
+
+def pathprint(routes):
+    #quick access function for displaying output
+    if routes == -1:
+        print("No routes possible")
+        return
+    for numb,i in enumerate(routes):
+        dist, path = i
+        print(F"Route {numb}: {dist} meters")
+        for k in range(len(path)):
+            print(path[k], end = "")
+            if k == len(path) - 1:
+                continue
+            print(" -> ", end = "")
+        print("")
+
 
 start, end = input().split()
-routes = djikstras(start, end, createnetwork())
-for i in routes:
-    print(i)
+routes = yens(start, end, createnetwork())
+pathprint(routes)
 #!BIG NOTE! with this new implementation, u need to input the route to test first before adding the network data.
 #ex:
 # A B -> route you want to test
@@ -75,4 +131,4 @@ for i in routes:
 # A B 2 -> edge 1
 # B A 2 -> edge 2
 
-#might have to implement yens algo in the future for 3 routes or a distance dict instead
+#no visited notes or dictionary set, may need to add for optimization. this can also be used to remove redundancy of routetest
