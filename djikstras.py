@@ -46,8 +46,6 @@ def djikstras(start, end, e, v):
     
     heap = []
     visited = dict()
-    for i in v:
-        visited[i] = INT_MAX
 
     heapq.heappush(heap, (0, [start]))
     while heap:
@@ -57,7 +55,7 @@ def djikstras(start, end, e, v):
         
         for dest,w in e[route[-1]]:
             if dest not in visited:
-                visited[dest] = INT_MAX #(Vertex Guard)
+                visited[dest] = dist + w
             if (dist + w) < visited[dest]:
                 visited[dest] = dist + w
                 heapq.heappush(heap, (visited[dest], route + [dest]))
