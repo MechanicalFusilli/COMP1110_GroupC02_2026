@@ -3,7 +3,7 @@ import heapq
 import sys
 import copy
 
-INT_MAX = sys.maxsize  
+INT_MAX = float("inf")
 #default dict provides an adjacency list implementation, which stores edges and their weights
 #heapq provides a min-heap implementation, which is used as a priority queue that accesses elements in O(1)
 
@@ -15,71 +15,67 @@ def takedata():
     for i in range(n):
         v.append(input())
     for i in range(m):
-        a, b, c = input().split()
+        a, b, c, d = input().split()
         c = int(c)
-        e[a].append([b,c])
-        e[b].append([a,c]) #i decided to make roads two-way, but if we want to change that just remove this 
-    return e
+        d = int(d)
+        e[a].append([b,c,d])
+        e[b].append([a,c,d]) #i decided to make roads two-way, but if we want to change that just remove this 
+    return e, v
 
-def createnetwork():
-    #this is where we can start culling roads and paths based on the customization options. 
-    #ideally, takedata() would return a messy set of data, which createnetwork would clean up, removing all unnecessay things
-    #ex: {a: {b: {3, 5, ["MTR"]}}}
-    #point a has a route to point b. it takes 3 minutes to get there for a cost of 5. the mode of transportation is mtr.
-    #if we wanted to remove all mtr routes, then this function would first unpack the entire data set, then cull all routes with the term "mtr"
-    return takedata()
-
-def routetest(start, end, e):
-#route test takes a bfs approach to explore and see if there is a connection between start and end
-    citlist = dict()
-    for point in e:
-        citlist[point] = 1
-    citlist[start] = 0
-    heap = []
-    heapq.heappush(heap, start)
-    while heap:
-        city = heapq.heappop(heap)
-        for dest, w in e[city]:
-            if dest == end:
-                return True
-            if citlist[dest] == 0:
-                continue
-            else:
-                citlist[dest] = 0
-                heapq.heappush(heap, dest)
+def createnetwork(a, b, c, dataset):
+    data = defaultdict(list)
+    #a refers to the number we will take from the data set for this algorithm (0 = cost, 1 = distance, 2 = some arbitrary value)
+    #if a = -1, then interger b will overwrite the weights of all paths, which is useful for testing stops/segments
+    #c is a list of transportation types that are banned. IT IS NOT IMPLEMENTED YET
+    #createnetwork(0, 0) will optimize by cost
+    #createnetwork(1, 0) will optimize by distance
+    #createnetwork(-1, 1) will optimize by stop/segments
+    if a != -1:
+        for i in dataset:
+            for j in dataset[i]:
+                data[i].append([j[0], j[a+1]])
     else:
-        return False
+        for i in dataset:
+            for j in dataset[i]:
+                data[i].append([j[0], b])
+    return data
 
-def djikstras(start, end, e):
+def djikstras(start, end, e, v):
     if start == end:
         return [0, [start]]
-    if (not routetest(start, end, e)):
-        return [INT_MAX, ["No Route"]]
+    
     heap = []
+    visited = dict()
+    for i in v:
+        visited[i] = INT_MAX
+
     heapq.heappush(heap, (0, [start]))
     while heap:
         dist, route = heapq.heappop(heap)
         if route[-1] == end:
             return [dist, route]
+        
         for dest,w in e[route[-1]]:
-            newroute = list(route)
-            newroute.append(dest)
-            heapq.heappush(heap, (w + dist, newroute))
+            if (dist + w) < visited[dest]:
+                visited[dest] = dist + w
+                heapq.heappush(heap, (visited[dest], route + [dest]))
+    return [INT_MAX, ["No Route"]]
 
-def yens(start, end ,e):
+def yens(start, end, e, v):
     paths = []  
-    #paths is a list of lists. Each list it contains follows the format [Distance Number, [Sequential Route Order]]
-    paths.append(djikstras(start, end ,e))
+    paths.append(djikstras(start, end ,e, v))
     if paths[-1][1][0] == "No Route":
         return -1
-    for i in range(1,3):
+     #paths is a list of lists. Each list it contains follows the format [Distance Number, [Sequential Route Order]]
+
+    for i in range(1,3): #maybe we can make it more adaptable to show k amount of paths by changing 3 here
         potential = []
         for j in range(len(paths[-1][1])-1):
             spur = paths[-1][1][j]
             root = paths[-1][1][:j+1]
             newe = copy.deepcopy(e)
 
-            rootw, _ = djikstras(start, spur, e)
+            rootw, _ = djikstras(start, spur, e, v)
 
             #remove instances of previous paths
             for dist, path in paths:
@@ -91,11 +87,12 @@ def yens(start, end ,e):
             for node in root[:-1]:
                 newe[node] = []
 
-            w, r = djikstras(spur, end, newe)
+            w, r = djikstras(spur, end, newe, v)
             if r[0] == "No Route":
                 continue
-            path = root[:-1] + r
-            heapq.heappush(potential, [w + rootw, path])
+
+            heapq.heappush(potential, [w + rootw, root[:-1] + r])
+
         if potential:
             dist, new_path = heapq.heappop(potential)
             paths.append([dist, new_path])
@@ -119,16 +116,17 @@ def pathprint(routes):
         print("")
 
 
-start, end = input().split()
-routes = yens(start, end, createnetwork())
+start, end, na, nb = input().split()
+na = int(na)
+nb = int(nb)
+adjlist, verlist = takedata()
+routes = yens(start, end, createnetwork(na, nb, [], adjlist), verlist)
 pathprint(routes)
 #!BIG NOTE! with this new implementation, u need to input the route to test first before adding the network data.
 #ex:
-# A B -> route you want to test
+# A B 0 1 -> route you want to test, options
 # 2 2 -> number of v and e
 # A -> vertex 1 name
 # B -> vertex 2 name
-# A B 2 -> edge 1
-# B A 2 -> edge 2
-
-#no visited notes or dictionary set, may need to add for optimization. this can also be used to remove redundancy of routetest
+# A B 2 4-> edge 1 (start, end, cost, distance)
+# B A 2 3-> edge 2 (start, end, cost, distance)
