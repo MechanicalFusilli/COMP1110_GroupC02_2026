@@ -5,7 +5,7 @@ import os
 from db import Seg
 
 def main():
-    network_system = NetworkSystem.load_network()
+    network_system = NetworkSystem.load_network("test_network.txt")
     if network_system == None:
         print("Failed to load network")
         return
@@ -28,10 +28,33 @@ class NetworkSystem:
             "avoid_modes" : [],
         }
 
-        # Testing
-        print(self.vertices)
-        print(self.transport_modes)
-        print(len(self.segments))
+        # This makes self.adjacency_list
+        self.make_adjacency_list()
+
+        self.output_adjacency_list()
+    
+    def make_adjacency_list(self):
+        self.adjacency_list = dict()
+
+        for segment in self.segments:
+            # Create list at key if it doesn't exist
+            if self.adjacency_list.get(segment.start) is None:
+                self.adjacency_list[segment.start] = []
+            
+            self.adjacency_list[segment.start].append(segment)
+    
+    def output_adjacency_list(self):
+        
+        for start, seglist in self.adjacency_list.items():
+            print("="*20)
+            print(f"Paths from {start}:")
+            print("-"*20)
+            for segment in seglist:
+                print(f"End: {segment.end}")
+                print(f"Mode of Transport: {segment.mode}")
+                print(f"Distance: {segment.distance}")
+                print(f"Cost: {segment.cost}")
+                print('-'*20)
 
     # Loads network from file, to call: NetworkSystem.load_network(insert filename)
     # Validates the file formatting
