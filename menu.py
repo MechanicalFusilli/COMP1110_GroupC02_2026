@@ -43,6 +43,7 @@ class MenuPage:
 
     # Loop menu indefinitely, include options like "return"/"exit"?
     def mainloop(self):
+
         while True:
             # Prompt and read user input
             self.prompt_options()
@@ -105,8 +106,12 @@ class MenuPage:
                 is_valid = user_input in self.valid_options.keys()
             else:
                 user_input = user_input.split(self.delimiter)
-                is_valid = all([item in self.valid_options.keys() for item in user_input])
+                in_options = all([item in self.valid_options.keys() for item in user_input])
+                is_unique = (len(user_input) == len(set(user_input)))
+                is_valid = in_options and is_unique
         
+        print()
+
         # Return value: string if not multiple, list of strings if multiple
         # The return value(s) will be in lowercase if not case_sensitive
         return user_input

@@ -1,11 +1,11 @@
-# This is where data is stored
+# This is where data on the network and settings is stored
 # I have not tested the network validation stuff yet
 # For network loading validation: TODO: exception handling
 import os
 from db import Seg
 
 def main():
-    network_system = NetworkSystem.load_network("test_network.txt")
+    network_system = NetworkSystem.load_network()
     if network_system == None:
         print("Failed to load network")
         return
@@ -21,17 +21,13 @@ class NetworkSystem:
         self.segments = segments
 
         # Settings set to default
-        # Inspired by Ezekiel's implementation but it needs to fit Carl's djikstra
-        # I will do functionality related to settings later
         self.settings = {
-            "priority": 0,
+            "preference": 0,
             "avoid_modes" : [],
         }
 
         # This makes self.adjacency_list
         self.make_adjacency_list()
-
-        self.output_adjacency_list()
     
     def make_adjacency_list(self):
         self.adjacency_list = dict()
@@ -43,6 +39,7 @@ class NetworkSystem:
             
             self.adjacency_list[segment.start].append(segment)
     
+    # Debugging function to output the adjacency list contents
     def output_adjacency_list(self):
         
         for start, seglist in self.adjacency_list.items():

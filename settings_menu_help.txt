@@ -1,5 +1,9 @@
-~~ Options in Settings 
+~~ Options in Settings ~~
 Preference: choose whether the best route is determined by being the cheapest, fastest or having the fewest segments
 Set Avoid Modes: Set which modes of transport to avoid
+Clear Avoid Modes: Clear settings for avoided modes
+Print Settings: Print the above settings
 Help: Print this page
 Return: Returns to the main menu
+
+Important Note: Settings is not available until you Upload Map on the main menu
