@@ -1,0 +1,5 @@
+~~ Options in Settings 
+Preference: choose whether the best route is determined by being the cheapest, fastest or having the fewest segments
+Set Avoid Modes: Set which modes of transport to avoid
+Help: Print this page
+Return: Returns to the main menu

@@ -1,0 +1,7 @@
+This transport advisor helps you find the best route given certain conditions (which can be adjusted in settings).
+~~ Main Menu Options ~~
+Upload Map: TODO EXPLANATION
+Plan Route: TODO EXPLANATION
+Change Settings: There is a help page within the settings menu that will explain the settings
+Help: Print this page
+Quit: Exit the program
