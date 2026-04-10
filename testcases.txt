@@ -44,4 +44,76 @@ walk
 ken, hku, 1, 1
 walk, 0, 10
 
+For when the origin and destination is the same, resulting in a loop:
+2, 1, 1
+tks
+hku
+bus
+tks, tks, 1, 1
+bus, 5, 5
+
+For when there are duplicate edges:
+2, 1, 2
+tks
+hku
+bus
+tks, hku, 1, 1
+bus, 5, 5
+tks, hku, 1, 1
+bus, 5, 5
+
+For when there are different costs for the same edge (lesser cost should be taken) :
+2, 1, 1
+tks
+hku
+bus
+tks, hku, 1, 2
+bus, 5, 10
+bus, 2, 20
+
+For when an invalid node is given:
+2, 1, 1
+tks
+hku
+bus
+tks, tst, 1, 1
+bus, 5, 5
+
+For when the two subpaths are disconnected:
+4, 2, 2
+hku
+cen
+tst
+tsq
+mtr
+walk
+hku, cen, 1, 1
+mtr, 5, 5
+tst, tsq, 1, 1
+walk, 0, 10
+
+For a huge graph (stress test):
+5, 3, 6
+hku
+cen
+tst
+cwb
+mgk
+mtr
+bus
+walk
+hku, cen, 1, 1
+mtr, 5, 5
+cen, tst, 1, 1
+mtr, 5, 5
+tst, cwb, 1, 1
+mtr, 5, 5
+cwb, mgk, 1, 1
+mtr, 5, 5
+mgk, hku, 1, 1
+mtr, 5, 5
+hku, tst, 1, 1
+bus, 20, 10
+
+
 
