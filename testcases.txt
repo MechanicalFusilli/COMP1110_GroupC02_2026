@@ -1,1 +1,47 @@
 These are the test cases for Djikstra's input:
+
+For one way:
+2, 1, 1
+hku
+cen
+mtr
+hku, cen, 0, 1
+mtr, 5, 5
+
+For when there are multiple ways of transporation for a destination:
+2, 3, 1
+hku
+cen
+mtr
+bus
+walk
+hku, cen, 1, 3
+mtr, 5, 5
+bus, 10, 8
+walk, 0, 15
+
+For when an invald transportation type is given:
+2, 1, 1
+hku
+cen
+mtr
+hku, cen, 1, 1
+bus, 5, 5
+
+For when the wrong path count is given:
+2, 1, 1
+hku
+cen
+mtr
+hku, cen, 1, 2
+mtr, 5, 5
+
+For when the cost is zero:
+2, 1, 1
+ken
+hku
+walk
+ken, hku, 1, 1
+walk, 0, 10
+
+
