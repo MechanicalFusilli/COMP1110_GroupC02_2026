@@ -9,6 +9,8 @@ def main():
     if network_system == None:
         print("Failed to load network")
         return
+    network_system.output_adjacency_list()
+    print(network_system.adjacency_list)
 
 class NetworkSystem:
     def __init__(self, vertices : list, transport_modes : list, segments : list):
@@ -131,7 +133,7 @@ class NetworkSystem:
             
             # Inaccurate number of subpaths
             if subpaths > 0:
-                return # Throw exception
+                return # Throw Exception
             
             return cls(vertices, transport_modes, segments)
         
@@ -184,7 +186,7 @@ class NetworkSystem:
             return False
         
         # First two parts aren't vertices
-        if not (line[0] in vertices or line[1] in vertices):
+        if not (line[0] in vertices and line[1] in vertices):
             return False
 
         # Last two parts aren't integers
