@@ -4,6 +4,15 @@
 import os
 from db import Seg
 
+class NetworkLoadError(Exception):
+    pass
+
+class NetworkFormatError(Exception):
+    pass
+
+class NetworkValidationError(Exception):
+    pass
+
 def main():
     network_system = NetworkSystem.load_network()
     if network_system == None:
