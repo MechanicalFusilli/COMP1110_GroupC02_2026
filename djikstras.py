@@ -27,14 +27,19 @@ def createnetwork(a, trans, dataset):
     #a refers to the number we will take from the data set for this algorithm (0 = cost, 1 = distance, -1 = segs)
     #trans is a list of transportation types that are banned. IT IS NOT IMPLEMENTED YET
     #use segments
-    if a != -1:
+    if a == 0:
         for i in dataset:
             for j in dataset[i]:
-                data[i].append([j[0], j[a+1]])
+                data[i].append([j.end, j.cost])
+    
+    else if a == 1:
+        for i in dataset:
+            for j in dataset[i]:
+                data[i].append([j.end, j.distance])
     else:
         for i in dataset:
             for j in dataset[i]:
-                data[i].append([j[0], 1])
+                data[i].append([j.end, 1])
     return data
 
 def djikstras(start, end, e, v):
