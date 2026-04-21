@@ -26,6 +26,7 @@ def createnetwork(a, trans, dataset):
     data = defaultdict(list)
     #a refers to the number we will take from the data set for this algorithm (0 = cost, 1 = distance, -1 = segs)
     #trans is a list of transportation types that are banned. IT IS NOT IMPLEMENTED YET
+    #use segments
     if a != -1:
         for i in dataset:
             for j in dataset[i]:
