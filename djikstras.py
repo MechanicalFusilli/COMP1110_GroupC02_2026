@@ -22,14 +22,10 @@ def takedata():
         e[b].append([a,c,d]) #i decided to make roads two-way, but if we want to change that just remove this 
     return e, v
 
-def createnetwork(a, b, c, dataset):
+def createnetwork(a, trans, dataset):
     data = defaultdict(list)
-    #a refers to the number we will take from the data set for this algorithm (0 = cost, 1 = distance, 2 = some arbitrary value)
-    #if a = -1, then interger b will overwrite the weights of all paths, which is useful for testing stops/segments
-    #c is a list of transportation types that are banned. IT IS NOT IMPLEMENTED YET
-    #createnetwork(0, 0) will optimize by cost
-    #createnetwork(1, 0) will optimize by distance
-    #createnetwork(-1, 1) will optimize by stop/segments
+    #a refers to the number we will take from the data set for this algorithm (0 = cost, 1 = distance, -1 = segs)
+    #trans is a list of transportation types that are banned. IT IS NOT IMPLEMENTED YET
     if a != -1:
         for i in dataset:
             for j in dataset[i]:
@@ -37,7 +33,7 @@ def createnetwork(a, b, c, dataset):
     else:
         for i in dataset:
             for j in dataset[i]:
-                data[i].append([j[0], b])
+                data[i].append([j[0], 1])
     return data
 
 def djikstras(start, end, e, v):
@@ -115,13 +111,15 @@ def pathprint(routes):
             print(" -> ", end = "")
         print("")
 
-
-start, end, na, nb = input().split()
-na = int(na)
-nb = int(nb)
-adjlist, verlist = takedata()
-routes = yens(start, end, createnetwork(na, nb, [], adjlist), verlist)
-pathprint(routes)
+def startfind(start, end, option, transtype, adjlist, verlist);
+    #start and end refer to destination
+    #option is customization
+    #transtype is list of banned transportation
+    #adjlist is the adjacency list
+    #verlist is the vertex list
+    routes = yens(start, end, createnetwork(option, transtype, adjlist), verlist)
+    pathprint(routes)
+    
 #!BIG NOTE! with this new implementation, u need to input the route to test first before adding the network data.
 #ex:
 # A B 0 1 -> route you want to test, options
