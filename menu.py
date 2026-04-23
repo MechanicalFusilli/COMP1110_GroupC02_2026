@@ -1,4 +1,4 @@
-from pathprint import print_path
+from Pathprint import print_path
 # 2/4/2026 update:
 # Grouped menu functionality together into the menu class
 # Removed data storage functionality of the menu class
