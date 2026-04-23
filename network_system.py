@@ -1,6 +1,7 @@
 # This is where data on the network and settings is stored
 import os
 from db import Seg
+from djikstras import startfind
 
 class NetworkLoadError(Exception):
     pass
@@ -14,8 +15,9 @@ class NetworkValidationError(NetworkLoadError):
 def main():
     try:
         network_system = NetworkSystem.load_network()
-        network_system.output_adjacency_list()
-        print(network_system.adjacency_list)
+        print("Adjacnecy list")
+        print(network_system.output_adjacency_list())
+        startfind("hku", "mgk", 1, [], network_system.adjacency_list, network_system.vertices)
     except NetworkLoadError as e:
         print(f"Failed to load network: {e}")
 
@@ -33,6 +35,8 @@ class NetworkSystem:
         self.settings = {
             "preference": 0,
             "avoid_modes": [],
+            "start": None,
+            "end": None,
         }
 
         # This makes self.adjacency_list
@@ -57,7 +61,7 @@ class NetworkSystem:
             for segment in seglist:
                 print(f"End: {segment.end}")
                 print(f"Mode of Transport: {segment.mode}")
-                print(f"Time: {segment.time}")
+                print(f"Distance: {segment.distance}")
                 print(f"Cost: {segment.cost}")
                 print("-" * 20)
 
@@ -101,12 +105,12 @@ class NetworkSystem:
 
         if not cls.validate_list(vertices, delimiter):
             raise NetworkValidationError(
-                "The list of vertices contains an empty line or an invalid delimiter."
+                "The list of vertices contains an empty line, a duplicate entry or an invalid delimiter."
             )
 
         if not cls.validate_list(transport_modes, delimiter):
             raise NetworkValidationError(
-                "The list of transport modes contains an empty line or an invalid delimiter."
+                "The list of transport modes contains an empty line, a duplicate entry or an invalid delimiter."
             )
 
         segments = []
@@ -148,11 +152,11 @@ class NetworkSystem:
                         f"Invalid subpath line at line {line_number}: '{raw_line.strip()}'."
                     )
 
-                new_seg = Seg(start, dest, line[0], line[1], line[2])
+                new_seg = Seg(start, dest, line[0], int(line[1]), int(line[2]))
                 segments.append(new_seg)
 
                 if bidirectional:
-                    new_seg = Seg(dest, start, line[0], line[1], line[2])
+                    new_seg = Seg(dest, start, line[0], int(line[1]), int(line[2]))
                     segments.append(new_seg)
 
                 subpaths -= 1
@@ -197,6 +201,10 @@ class NetworkSystem:
 
         # Any line is empty
         if not all([x.strip() for x in lst]):
+            return False
+        
+        # Any duplicates (not case sensitive)
+        if not (len(set(map(lambda x: x.lower(), lst))) == len(lst)):
             return False
 
         return True

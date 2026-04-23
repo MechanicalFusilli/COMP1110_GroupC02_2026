@@ -3,7 +3,7 @@
 from menu import MenuPage
 from network_system import NetworkSystem
 from sys import exit
-from pathprint import print_path
+from djikstras import startfind
 
 # This file is just for buildling the menus, I will likely remove this main, this is for testing
 def main():
@@ -19,7 +19,9 @@ class MenuSystem:
         self.main_menu.mainloop()
 
     def build_all_menus(self):
-        # Special case here because this depends on the existence of network_system
+        # Special cases here because they depends on the existence of network_system
+        self.start_menu = None
+        self.end_menu = None
         self.avoid_modes_menu = None
         
         self.build_preference_menu()
@@ -48,6 +50,20 @@ class MenuSystem:
             options_dict,
             user_prompt="~~ Set Avoid Modes ~~",
             multiple=True
+        )
+    
+    def build_end_menu(self):
+        def set_end(end):
+            if self.network_system.settings["start"] == end:
+                print(f"Failed to set destination because {end} was set as start")
+                return
+            self.network_system.settings["end"] = end
+            print(f"Set {end} as the destination.")
+        
+        options_dict = {option:lambda option=option : set_end(option) for option in self.network_system.vertices}
+        self.end_menu = MenuPage(
+            options_dict,
+            user_prompt="~~ Set end ~~~",
         )
 
     def build_main_menu(self):
@@ -84,12 +100,28 @@ class MenuSystem:
             options_dict,
             user_prompt="~~ Set Preference ~~",
         )
+    
+    def build_start_menu(self):
+        def set_start(start):
+            if self.network_system.settings["end"] == start:
+                print(f"Failed to set start because {start} was set as end")
+                return
+            self.network_system.settings["start"] = start
+            print(f"Set {start} as the starting point.")
+        
+        options_dict = {option:lambda option=option: set_start(option) for option in self.network_system.vertices}
+        self.start_menu = MenuPage(
+            options_dict,
+            user_prompt="~~ Set start ~~~",
+        )
 
     def build_settings_menu(self):
         options_dict = {
+            "Set Start": lambda: self.enter_assignment_menu(self.start_menu),
+            "Set End": lambda: self.enter_assignment_menu(self.end_menu),
             "Set Preference" : lambda: self.enter_assignment_menu(self.preference_menu),
             "Set Avoid Modes" : lambda: self.enter_assignment_menu(self.avoid_modes_menu),
-            "Clear Avoid Modes" : self.clear_avoid_modes,
+            "Clear Preferences" : self.clear_settings,
             "Print Settings": self.print_settings,
             "Help": lambda: self.print_help("settings_menu_help.txt"),
         }
@@ -98,26 +130,17 @@ class MenuSystem:
             options_dict,
             user_prompt="~~ Settings ~~",
         )
-        
-    # ask user for start/end, then run Dijkstra and print the route
-    def plan_route(self):
-        if self.network_system is None:
-            print("Upload Map first")
-            return
 
-        start = input("Start: ").strip()
-        end = input("End: ").strip()
-
-        print_path(self.network_system, start, end)
-
-    def clear_avoid_modes(self):
+    def clear_settings(self):
         # To prevent unexpected behaviour if no network_system
         if self.network_system == None:
             print("Upload Map to set settings")
             return
         
         self.network_system.settings["avoid_modes"] = []
-        print("Cleared avoid modes")
+        self.network_system.settings["start"] = None
+        self.network_system.settings["end"] = None
+        print("Cleared all settings")
 
         #Reset menu
         self.build_avoid_modes_menu()
@@ -130,6 +153,22 @@ class MenuSystem:
             return
         
         menu.mainloop()
+    
+    def plan_route(self):
+        if self.network_system == None:
+            print("Upload Map to start planning a route")
+            print("(start and end will also need to be set in change settings)")
+            return
+        
+        start = self.network_system.settings["start"]
+        end = self.network_system.settings["end"]
+        if start == None or end == None:
+            print("start or end has not been set, go to change settings to set them")
+            return
+        
+        optimise_by = self.network_system.settings["preference"]
+        avoid = self.network_system.settings["avoid_modes"]
+        startfind(start, end, optimise_by, avoid, self.network_system.adjacency_list, self.network_system.vertices)
 
     # Print whatever help page is there
     def print_help(self, filepath):
@@ -137,7 +176,7 @@ class MenuSystem:
             help_content = file.read()
         
         print(help_content)
-    
+
     def print_settings(self):
 
         # To prevent unexpected behaviour if no network_system
@@ -147,6 +186,9 @@ class MenuSystem:
         
         settings = self.network_system.settings
         print("~~ Current Settings ~~")
+
+        print(f"Start: {settings["start"]}")
+        print(f"End: {settings["end"]}")
 
         print("Preference:")
         p = {0:"cost", 1:"distance", -1:"segments"}.get(settings.get("preference"))
@@ -176,6 +218,8 @@ class MenuSystem:
         if self.network_system != None:
             print("Successfully set network")
             self.build_avoid_modes_menu()
+            self.build_start_menu()
+            self.build_end_menu()
         else:
             print("There was a problem in setting the network")
 
