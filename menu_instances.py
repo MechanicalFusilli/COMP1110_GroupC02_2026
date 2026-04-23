@@ -3,6 +3,7 @@
 from menu import MenuPage
 from network_system import NetworkSystem
 from sys import exit
+from pathprint import print_path
 
 # This file is just for buildling the menus, I will likely remove this main, this is for testing
 def main():
@@ -53,7 +54,7 @@ class MenuSystem:
         # Function implementations of various functions go in options_dict
         options_dict = {
             "Upload Map" : self.upload_map,
-            "Plan Route" : None,
+            "Plan Route" : self.plan_route,
             "Change Settings" : self.settings_menu.mainloop, # enter settings menu
             "Help" : lambda: self.print_help("main_menu_help.txt"),
             "Quit" : self.quit_program
