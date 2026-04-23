@@ -98,6 +98,17 @@ class MenuSystem:
             options_dict,
             user_prompt="~~ Settings ~~",
         )
+        
+    # ask user for start/end, then run Dijkstra and print the route
+    def plan_route(self):
+        if self.network_system is None:
+            print("Upload Map first")
+            return
+
+        start = input("Start: ").strip()
+        end = input("End: ").strip()
+
+        print_path(self.network_system, start, end)
 
     def clear_avoid_modes(self):
         # To prevent unexpected behaviour if no network_system
