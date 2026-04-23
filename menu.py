@@ -74,17 +74,6 @@ class MenuPage:
         if callable(function):
             function()
 
-    # ask user for start/end, then run Dijkstra and print the route
-    def plan_route(self):
-        if self.network_system is None:
-            print("Upload Map first")
-            return
-
-        start = input("Start: ").strip()
-        end = input("End: ").strip()
-
-        print_path(self.network_system, start, end)
-
     # Gets user to input variable value and return it
     def prompt_options(self):
         
