@@ -3,9 +3,9 @@
 # Currently reworking load_network, moved to network_system
 
 class Seg:
-    def __init__(self, start, end, mode, time, cost):
+    def __init__(self, start, end, mode, distance, cost):
         self.start = start
         self.end = end
         self.mode = mode
-        self.time = time
+        self.distance = distance
         self.cost = cost
