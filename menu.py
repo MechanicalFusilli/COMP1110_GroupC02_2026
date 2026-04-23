@@ -1,3 +1,4 @@
+from pathprint import print_path
 # 2/4/2026 update:
 # Grouped menu functionality together into the menu class
 # Removed data storage functionality of the menu class
@@ -72,6 +73,17 @@ class MenuPage:
         function = self.valid_options.get(label)
         if callable(function):
             function()
+
+    # ask user for start/end, then run Dijkstra and print the route
+    def plan_route(self):
+        if self.network_system is None:
+            print("Upload Map first")
+            return
+
+        start = input("Start: ").strip()
+        end = input("End: ").strip()
+
+        print_path(self.network_system, start, end)
 
     # Gets user to input variable value and return it
     def prompt_options(self):
