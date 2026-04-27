@@ -161,15 +161,19 @@ class MenuSystem:
             print("Set start and end first")
             return
 
-        routes = startfind(
-            self.network_system.settings["start"],
-            self.network_system.settings["end"],
-            self.network_system.settings["preference"],
-            self.network_system.settings["avoid_modes"],
-            self.network_system.adjacency_list,
-        )
+        try:
+            routes = startfind(
+                self.network_system.settings["start"],
+                self.network_system.settings["end"],
+                self.network_system.settings["preference"],
+                self.network_system.settings["avoid_modes"],
+                self.network_system.adjacency_list
+            )
 
-        print_path(routes)
+            print_path(routes)
+
+        except Exception as e:
+            print(f"Could not plan route: {e}")
 
     # Print whatever help page is there
     def print_help(self, filepath):
@@ -212,16 +216,17 @@ class MenuSystem:
         filename = input(">>> ")
         print()
 
-        self.network_system = NetworkSystem.load_network(filename)
+        try:
+            self.network_system = NetworkSystem.load_network(filename)
 
-        if self.network_system != None:
             print("Successfully set network")
-            print("Go to settings to set start and end points")
             self.build_avoid_modes_menu()
             self.build_start_menu()
             self.build_end_menu()
-        else:
-            print("There was a problem in setting the network")
+
+        except Exception as e:
+            self.network_system = None
+            print(f"There was a problem in setting the network: {e}")
 
 if __name__ == '__main__':
     main()

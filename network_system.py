@@ -17,7 +17,7 @@ def main():
         network_system = NetworkSystem.load_network()
         print("Adjacnecy list")
         print(network_system.output_adjacency_list())
-        startfind("hku", "mgk", 1, [], network_system.adjacency_list, network_system.vertices)
+        startfind("hku", "mgk", 1, [], network_system.adjacency_list)
     except NetworkLoadError as e:
         print(f"Failed to load network: {e}")
 
