@@ -167,7 +167,6 @@ class MenuSystem:
             self.network_system.settings["preference"],
             self.network_system.settings["avoid_modes"],
             self.network_system.adjacency_list,
-            self.network_system.vertices
         )
 
         print_path(routes)
@@ -217,6 +216,7 @@ class MenuSystem:
 
         if self.network_system != None:
             print("Successfully set network")
+            print("Go to settings to set start and end points")
             self.build_avoid_modes_menu()
             self.build_start_menu()
             self.build_end_menu()
