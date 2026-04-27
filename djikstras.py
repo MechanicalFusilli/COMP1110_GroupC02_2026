@@ -60,7 +60,7 @@ def djikstras(start, end, e):
         if route[-1][0] == end:
             return [dist, route]
         
-        for dest, w in e[route[-1]]:
+        for dest, w in e[route[-1][0]]:
             newdist = dist + w
             if dest not in visited or newdist < visited[dest]:
                 visited[dest] = newdist
@@ -81,7 +81,7 @@ def yens(start, end, e):
             root = paths[-1][1][:j+1]
             newe = copy.deepcopy(e)
 
-            rootw, _ = sum(w for _, w in root)
+            rootw = sum(w for _, w in root)
 
             #remove instances of previous paths
             for dist, path in paths:
