@@ -3,8 +3,6 @@ import heapq
 import copy
 
 INT_MAX = float("inf")
-#default dict provides an adjacency list implementation, which stores edges and their weights
-#heapq provides a min-heap implementation, which is used as a priority queue that accesses elements in O(1)
 
 def takedata():
     #this part is subject to change, but for now it takes in data based upon the format in the whatsapp group
@@ -47,60 +45,67 @@ def createnetwork(a, trans, dataset):
                 data[i].append([j.end, 1])
     return data
 
-def djikstras(start, end, e, v):
+
+def djikstras(start, end, e):
     if start == end:
         return [0, [start]]
-    
     heap = []
     visited = dict()
 
-    heapq.heappush(heap, (0, [start]))
+    heapq.heappush(heap, (0, [[start, 0]]))
     visited[start] = 0
 
     while heap:
         dist, route = heapq.heappop(heap)
-        if route[-1] == end:
+        if route[-1][0] == end:
             return [dist, route]
         
         for dest, w in e[route[-1]]:
             newdist = dist + w
             if dest not in visited or newdist < visited[dest]:
                 visited[dest] = newdist
-                heapq.heappush(heap, (newdist, route + [dest]))
+                heapq.heappush(heap, (newdist, route + [[dest, w]]))
+                
+    return [-1, ["No Route"]]
 
-    return [INT_MAX, ["No Route"]]
-
-def yens(start, end, e, v):
+def yens(start, end, e):
     paths = []  
-    paths.append(djikstras(start, end ,e, v))
-    if paths[-1][1][0] == "No Route":
+    paths.append(djikstras(start, end, e))
+    if paths[-1][0] == -1:
         return -1
-     #paths is a list of lists. Each list it contains follows the format [Distance Number, [Sequential Route Order]]
 
-    for i in range(1,3): #maybe we can make it more adaptable to show k amount of paths by changing 3 here
+    for i in range(1,3):
         potential = []
         for j in range(len(paths[-1][1])-1):
-            spur = paths[-1][1][j]
+            spur = paths[-1][1][j][0]
             root = paths[-1][1][:j+1]
             newe = copy.deepcopy(e)
 
-            rootw, _ = djikstras(start, spur, e, v)
+            rootw, _ = sum(w for _, w in root)
 
             #remove instances of previous paths
             for dist, path in paths:
                 if path[:j+1] == root and len(path) > j + 1:
-                    u = path[j]
-                    nextv = path[j+1]
-                    newe[u] = [edge for edge in newe[u] if edge[0] != nextv]
+                    start_a = path[j][0]
+                    end_b = path[j+1][0]
+                    end_w = path[j+1][1]
+
+                    removed = False
+                    temp = []
+                    for edge in newe[start_a]:
+                        if edge[0] == end_b and edge[1] == end_w and (not removed):
+                            removed = True
+                        else:
+                            temp.append(edge)
+                    newe[start_a] = temp
 
             #remove root nodes
-            for node in root[:-1]:
+            for node, _ in root[:-1]:
                 newe[node] = []
 
-            w, r = djikstras(spur, end, newe, v)
-            if r[0] == "No Route":
+            w, r = djikstras(spur, end, newe)
+            if w == -1:
                 continue
-
             heapq.heappush(potential, [w + rootw, root[:-1] + r])
 
         if potential:
@@ -110,10 +115,10 @@ def yens(start, end, e, v):
             break
     return paths
 
-def startfind(start, end, option, transtype, adjlist, verlist):
+def startfind(start, end, option, transtype, adjlist):
     #start and end refer to destination
     #option is customization
     #transtype is list of banned transportation
     #adjlist is the adjacency list
     #verlist is the vertex list
-    return yens(start, end, createnetwork(option, transtype, adjlist), verlist)
+    return yens(start, end, createnetwork(option, transtype, adjlist))
