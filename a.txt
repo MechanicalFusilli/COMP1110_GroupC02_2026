@@ -1,0 +1,54 @@
+9, 4, 15
+hku
+cen
+ken
+har
+tst
+tsq
+cwb
+tks
+mgk
+mtr
+bus
+mbus
+walk
+hku, cen, 1, 3
+mtr, 8, 5
+bus, 10, 6
+mbus, 9, 7
+hku, ken, 1, 2
+mtr, 2, 4
+walk, 15, 0
+hku, har, 1, 2
+bus, 25, 10
+walk, 18, 0
+hku, tks, 1, 1
+bus, 26, 12
+hku, mgk, 1, 2
+bus, 28, 13
+mbus, 30, 15
+cen, cwb, 1, 2
+mtr, 7, 5
+mbus, 12, 8
+cen, tst, 1, 2
+mtr, 6, 5
+bus, 15, 8
+tst, mgk, 1, 2
+mtr, 5, 5
+bus, 12, 7
+tst, har, 1, 1
+walk, 7, 0
+tsq, cwb, 1, 1
+walk, 5, 0
+tks, cwb, 1, 2
+mtr, 9, 5
+bus, 16, 8
+ken, cen, 1, 2
+mtr, 6, 5
+bus, 14, 7
+ken, cwb, 1, 1
+bus, 20, 9
+har, cen, 1, 1
+bus, 18, 8
+mgk, tks, 1, 1
+bus, 10, 6

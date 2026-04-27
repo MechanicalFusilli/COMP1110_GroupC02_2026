@@ -1,4 +1,6 @@
-def print_path(routes):
+def print_path(result):
+    routes, edgeid = result
+
     if routes == -1:
         print("No route found.")
         return
@@ -6,7 +8,8 @@ def print_path(routes):
     print("\n=== ROUTES ===\n")
 
     for i, route in enumerate(routes, 1):
-        total, path = route
+        total_weight = route[0]
+        path = route[1]
 
         print(f"Route {i}:")
 
@@ -25,20 +28,22 @@ def print_path(routes):
         for j in range(1, len(path)):
             previous_city = path[j - 1][0]
             current_city = path[j][0]
-            mode = path[j][1]
-            distance = path[j][3]
-            cost = path[j][4]
+            weight = path[j][1]
+            edge_id = path[j][2]
 
-            total_distance += distance
-            total_cost += cost
+            segment = edgeid[edge_id]
+
+            total_distance += segment.distance
+            total_cost += segment.cost
 
             print(f"{previous_city} -> {current_city}")
-            print(f"Mode of Transport: {mode}")
-            print(f"Distance: {distance}")
-            print(f"Cost: {cost}")
+            print(f"Mode of Transport: {segment.mode}")
+            print(f"Distance: {segment.distance}")
+            print(f"Cost: {segment.cost}")
+            print(f"Weight Used: {weight}")
             print("-" * 20)
 
         print(f"Total Distance: {total_distance}")
         print(f"Total Cost: {total_cost}")
-        print(f"Optimised Total: {total}")
+        print(f"Optimised Total: {total_weight}")
         print()
