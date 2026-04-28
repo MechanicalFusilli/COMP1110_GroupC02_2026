@@ -23,13 +23,15 @@ class MenuPage:
     # valid_options is inteded to be a dict of string : function
     def __init__(self, valid_options: dict, user_prompt: str ="",
                         multiple: bool =False, delimiter: str ="/",
-                        case_sensitive: bool=False, has_return: bool=True):
+                        case_sensitive: bool=False, has_return: bool=True,
+                        auto_return: bool=False):
         
         self.valid_options = valid_options
         self.user_prompt = user_prompt
         self.multiple = multiple
         self.delimiter = delimiter
         self.case_sensitive = case_sensitive
+        self.auto_return = auto_return
         
         # has_return: there exists a "Return option that breaks out of the mainloop"
         if has_return:
@@ -67,6 +69,10 @@ class MenuPage:
             else:
                 for choice in user_choice:
                     self.run_function(choice)
+            
+            if self.auto_return:
+                print("Returning to previous page...")
+                break
     
     # Get and run functions given a label
     def run_function(self, label):

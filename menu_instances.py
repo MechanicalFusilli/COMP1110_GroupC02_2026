@@ -52,7 +52,8 @@ class MenuSystem:
         self.avoid_modes_menu = MenuPage(
             options_dict,
             user_prompt="~~ Set Avoid Modes ~~",
-            multiple=True
+            multiple=True,
+            auto_return=True,
         )
     
     def build_end_menu(self):
@@ -67,6 +68,7 @@ class MenuSystem:
         self.end_menu = MenuPage(
             options_dict,
             user_prompt="~~ Set end ~~~",
+            auto_return=True,
         )
 
     def build_main_menu(self):
@@ -101,6 +103,7 @@ class MenuSystem:
         self.preference_menu = MenuPage(
             options_dict,
             user_prompt="~~ Set Preference ~~",
+            auto_return=True,
         )
     
     def build_start_menu(self):
@@ -115,6 +118,7 @@ class MenuSystem:
         self.start_menu = MenuPage(
             options_dict,
             user_prompt="~~ Set start ~~~",
+            auto_return=True,
         )
 
     def build_settings_menu(self):
