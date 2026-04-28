@@ -55,11 +55,11 @@ class MenuPage:
             # Break the loop immediately if return is in any part of user input
             if self.multiple:
                 if "return" in [choice.lower() for choice in user_choice]:
-                    print("Returning to previous page...")
-                    print("(If other options were selected, they will be disregarded)")
+                    print("\033[33m" + "Returning to previous page..." + "\033[0m")
+                    print("\033[33m" + "(If other options were selected, they will be disregarded)" + "\033[0m")
                     break
             elif user_choice.lower() == "return":
-                print("Returning to previous page...")
+                print("\033[33m" + "Returning to previous page..." + "\033[0m")
                 break
 
             # Execute function(s) associated with choice
@@ -71,7 +71,7 @@ class MenuPage:
                     self.run_function(choice)
             
             if self.auto_return:
-                print("Returning to previous page...")
+                print("\033[33m" + "Returning to previous page..." + "\033[0m")
                 break
     
     # Get and run functions given a label

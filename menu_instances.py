@@ -38,10 +38,10 @@ class MenuSystem:
 
             # Avoiding duplicates
             if option in avoid_modes:
-                print(f"{option} was already avoided")
+                print("\033[31m" + f"{option} was already avoided" + "\033[0m")
             else:
                 avoid_modes.append(option)
-                print(f"Successfully added {option} to avoided modes")
+                print("\033[32m" + f"Successfully added {option} to avoided modes" + "\033[0m")
                 # Build avoids mode menu without these in case menu is entered again
                 self.build_avoid_modes_menu()
             
@@ -59,10 +59,10 @@ class MenuSystem:
     def build_end_menu(self):
         def set_end(end):
             if self.network_system.settings["start"] == end:
-                print(f"Failed to set destination because {end} was set as start")
+                print("\033[31m" + f"Failed to set destination because {end} was set as start" + "\033[0m")
                 return
             self.network_system.settings["end"] = end
-            print(f"Set {end} as the destination.")
+            print("\033[32m" + f"Set {end} as the destination." + "\033[0m")
         
         options_dict = {option: (lambda option=option: set_end(option)) for option in self.network_system.vertices}
         self.end_menu = MenuPage(
@@ -92,7 +92,7 @@ class MenuSystem:
         # Will be called whenever an option is selected
         def set_preference(num: int):
             self.network_system.settings["preference"] = num
-            print("Set successfully.")
+            print("\033[32m" + "Set successfully." + "\033[0m")
 
         options_dict = {
             "Cheapest": lambda: set_preference(0),
@@ -109,10 +109,10 @@ class MenuSystem:
     def build_start_menu(self):
         def set_start(start):
             if self.network_system.settings["end"] == start:
-                print(f"Failed to set start because {start} was set as end")
+                print("\033[31m" + f"Failed to set start because {start} was set as end" + "\033[0m")
                 return
             self.network_system.settings["start"] = start
-            print(f"Set {start} as the starting point.")
+            print("\033[32m" + f"Set {start} as the starting point." + "\033[0m")
         
         options_dict = {option: (lambda option=option: set_start(option)) for option in self.network_system.vertices}
         self.start_menu = MenuPage(
@@ -139,30 +139,30 @@ class MenuSystem:
 
     def clear_settings(self):
         if self.network_system == None:
-            print("Upload Map to set settings")
+            print("\033[33m" + "Upload Map to set settings" + "\033[0m")
             return
         
         self.network_system.settings["avoid_modes"] = []
         self.network_system.settings["start"] = None
         self.network_system.settings["end"] = None
-        print("Cleared all settings")
+        print("\033[32m" + "Cleared all settings" + "\033[0m")
 
         self.build_avoid_modes_menu()
     
     def enter_assignment_menu(self, menu):
         if self.network_system == None or menu == None:
-            print("Upload Map to set settings")
+            print("\033[33m" + "Upload Map to set settings" + "\033[0m")
             return
         
         menu.mainloop()
     
     def plan_route(self):
         if self.network_system is None:
-            print("Upload Map first")
+            print("\033[33m" + "Upload Map first" + "\033[0m")
             return
 
         if self.network_system.settings["start"] is None or self.network_system.settings["end"] is None:
-            print("Set start and end first")
+            print("\033[33m" + "Set start and end first" + "\033[0m")
             return
 
         try:
@@ -177,7 +177,7 @@ class MenuSystem:
             print_path(routes)
 
         except Exception as e:
-            print(f"Could not plan route: {e}")
+            print("\033[31m" + f"Could not plan route: {e}" + "\033[0m")
 
     # Print whatever help page is there
     def print_help(self, filepath):
@@ -188,7 +188,7 @@ class MenuSystem:
 
     def print_settings(self):
         if self.network_system == None:
-            print("Upload Map in main menu to display settings\n")
+            print("\033[33m" + "Upload Map in main menu to display settings\n" + "\033[0m")
             return
         
         settings = self.network_system.settings
@@ -212,25 +212,25 @@ class MenuSystem:
 
     @staticmethod
     def quit_program():
-        print("~~ See you next time ~~")
+        print("\033[32m" + "~~ See you next time ~~" + "\033[0m")
         exit(0)
     
     def upload_map(self):
-        print("Input filename:")
+        print("\033[33m" + "Input filename:" + "\033[0m")
         filename = input(">>> ")
         print()
 
         try:
             self.network_system = NetworkSystem.load_network(filename)
 
-            print("Successfully set network")
+            print("\033[32m" + "Successfully set network" + "\033[0m")
             self.build_avoid_modes_menu()
             self.build_start_menu()
             self.build_end_menu()
 
         except Exception as e:
             self.network_system = None
-            print(f"There was a problem in setting the network: {e}")
+            print("\033[31m" + f"There was a problem in setting the network: {e}" + "\033[0m")
 
 if __name__ == '__main__':
     main()
