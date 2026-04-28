@@ -79,20 +79,9 @@ def yens(start, end, e):
             for dist, path in paths:
                 if path[:j+1] == root and len(path) > j + 1:
                     start_a = path[j][0]
-                    end_b = path[j+1][0]
-                    end_w = path[j+1][1]
                     end_id = path[j+1][2]
-
-                    removed = False
-                    temp = []
-                    for edge in newe[start_a]:
-                        if edge[0] == end_b and edge[1] == end_w and edge[2] == end_id and not removed:
-                            removed = True
-                        else:
-                            temp.append(edge)
-
-                    newe[start_a] = temp
-
+                    newe[start_a] = [edge for edge in newe[start_a] if end_id != edge[2]]
+                    
             # remove root nodes
             for step in root[:-1]:
                 node = step[0]
