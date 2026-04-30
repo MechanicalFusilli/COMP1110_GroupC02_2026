@@ -10,7 +10,7 @@ def createnetwork(a, trans, dataset):
     data = defaultdict(list)
     edgeid = {}
 
-    it = 0
+    it = 0 #a counter to provide each edge with a unique id
 
     for i in dataset:
         for j in dataset[i]:
@@ -51,7 +51,7 @@ def djikstras(start, end, e):
         if route[-1][0] == end:
             return [dist, route]
         
-        for dest, w, edge_id in e[route[-1][0]]:
+        for dest, w, edge_id in e[route[-1][0]]: #destination, weight, edgeid
             newdist = dist + w
             if dest not in visited or newdist < visited[dest]:
                 visited[dest] = newdist
@@ -73,7 +73,7 @@ def yens(start, end, e):
             root = paths[-1][1][:j + 1]
             newe = copy.deepcopy(e)
 
-            rootw = sum(step[1] for step in root)
+            rootw = sum(step[1] for step in root) #rootweight
 
             # remove instances of previous paths
             for dist, path in paths:
