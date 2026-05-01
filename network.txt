@@ -25,7 +25,6 @@ hku, tks, 1, 1
 bus, 26, 12, 20
 hku, mgk, 1, 2
 bus, 28, 13, 20
-bus, 28, 13, 20
 cen, cwb, 1, 2
 mtr, 7, 5, 3
 mbus, 12, 8, 10
