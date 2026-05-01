@@ -25,6 +25,7 @@ class MenuSystem:
         # Special cases here because they depends on the existence of network_system
         self.start_menu = None
         self.end_menu = None
+        self.time_menu = None
         self.avoid_modes_menu = None
         
         self.build_preference_menu()
@@ -121,12 +122,48 @@ class MenuSystem:
             auto_return=True,
         )
 
+    def build_time_menu(self):
+        def set_time():
+            print("\033[33m" + "Type the departure time in the format a:b (hour:minute)." + "\033[0m")
+            time_input = input(">>> ").strip()
+
+            if ":" not in time_input:
+                print("\033[31m" + f"Failed to set time: '{time_input}' is not in the format a:b" + "\033[0m")
+                return
+
+            hour_text, minute_text = time_input.split(":", 1)
+
+            try:
+                hour = int(hour_text)
+                minute = int(minute_text)
+            except ValueError:
+                print("\033[31m" + "Failed to set time: both hour and minute must be integers" + "\033[0m")
+                return
+
+            if not (0 <= hour <= 23 and 0 <= minute <= 59):
+                print("\033[31m" + f"Failed to set time: {hour}:{minute} is not a valid clock time" + "\033[0m")
+                return
+
+            self.network_system.settings["time"] = hour*60 + minute
+            print("\033[32m" + f"Set departure time to {hour}:{minute:02d}." + "\033[0m")
+        
+        options_dict = {
+            "Enter Time of Departure": lambda: set_time(),
+        }
+        
+        self.time_menu = MenuPage(
+            options_dict,
+            user_prompt="~~ Set Time ~~~",
+            auto_return=True,
+        )
+
     def build_settings_menu(self):
         options_dict = {
             "Set Start": lambda: self.enter_assignment_menu(self.start_menu),
             "Set End": lambda: self.enter_assignment_menu(self.end_menu),
-            "Set Preference": lambda: self.enter_assignment_menu(self.preference_menu),
-            "Set Avoid Modes": lambda: self.enter_assignment_menu(self.avoid_modes_menu),
+            "Set Time of Departure": lambda: self.enter_assignment_menu(self.time_menu),
+            "Set Optimization Preference": lambda: self.enter_assignment_menu(self.preference_menu),
+            "Set List of Banned Transportation Modes": lambda: self.enter_assignment_menu(self.avoid_modes_menu),
             "Clear Preferences": self.clear_settings,
             "Print Settings": self.print_settings,
             "Help": lambda: self.print_help("settings_menu_help.txt"),
@@ -169,12 +206,13 @@ class MenuSystem:
             routes = startfind(
                 self.network_system.settings["start"],
                 self.network_system.settings["end"],
+                self.network_system.settings["time"],
                 self.network_system.settings["preference"],
                 self.network_system.settings["avoid_modes"],
                 self.network_system.adjacency_list
             )
 
-            print_path(routes)
+            print_path(routes, self.network_system.settings["time"])
 
         except Exception as e:
             print("\033[31m" + f"Could not plan route: {e}" + "\033[0m")
@@ -196,7 +234,7 @@ class MenuSystem:
 
         print(f"Start: {settings['start']}")
         print(f"End: {settings['end']}")
-
+        print(f"Time: {(settings['time'])//60}:{(settings['time'])%60:02d}")
         print("Preference:")
         p = {0: "cost", 1: "distance", -1: "segments"}.get(settings.get("preference"))
         print(f"Path is optimised by {p}")
@@ -226,6 +264,7 @@ class MenuSystem:
             print("\033[32m" + "Successfully set network" + "\033[0m")
             self.build_avoid_modes_menu()
             self.build_start_menu()
+            self.build_time_menu()
             self.build_end_menu()
 
         except Exception as e:

@@ -161,13 +161,13 @@ class NetworkSystem:
                     )
 
                 new_seg = Seg(
-                    start, dest, line[0], int(line[1]), int(line[2]), int(line[3])
+                    start, dest, line[0], int(line[1]), int(line[2]), int(line[3]), int(line[4]), int(line[5])
                 )
                 segments.append(new_seg)
 
                 if bidirectional:
                     new_seg = Seg(
-                        dest, start, line[0], int(line[1]), int(line[2]), int(line[3])
+                        dest, start, line[0], int(line[1]), int(line[2]), int(line[3]), int(line[4]), int(line[5])
                     )
                     segments.append(new_seg)
 
@@ -247,20 +247,31 @@ class NetworkSystem:
 
     @staticmethod
     def validate_subpath_line(line: list, transport_modes: list):
-        # Not 4 items
-        if len(line) != 4:
+        # Not 6 items
+        if len(line) != 6:
             return False
 
         # First item not in transport modes
         if line[0] not in transport_modes:
             return False
 
-        # Last three parts aren't integers
+        # Next three parts aren't integers
         if not (line[1].isdecimal() and line[2].isdecimal() and line[3].isdecimal()):
             return False
 
+        # Last two parts aren't integers
+        if not (line[4].isdecimal() and line[5].isdecimal()):
+            return False
+        
+        #Time is not within 0 to 1440
+        if not (0 <= int(line[4]) < 1440) or not (0 <= int(line[5]) < 1440) or not (0 <= int(line[3]) < 1440):
+            return False
+        
+        #start time is earlier than end time
+        if (int(line[4]) > int(line[5])): return False
+
         # Negative cost/time/wait time (zero is allowed here)
-        if int(line[1]) < 0 or int(line[2]) < 0 or int(line[3]) < 0:
+        if int(line[1]) < 0 or int(line[2]) < 0 or int(line[3]) <= 0:
             return False
 
         return True

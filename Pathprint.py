@@ -1,4 +1,4 @@
-def print_path(result):
+def print_path(result, time):
     routes, edgeid = result
 
     if routes == -1:
@@ -15,7 +15,6 @@ def print_path(result):
         city_names = []
         total_distance = 0
         total_cost = 0
-        total_wait_time = 0
 
         for step in path:
             city_names.append(step[0])
@@ -25,17 +24,16 @@ def print_path(result):
             edge_id = path[j][2]
             segment = edgeid[edge_id]
 
-            total_distance += segment.distance
+            total_distance += path[j][1]
             total_cost += segment.cost
-            total_wait_time += segment.wait_time
 
         print("Cities:")
         print(" -> ".join(city_names))
 
         # 🔥 totals now here
-        print(f"\nTime Required: {total_distance} mins")
+        print(f"\nTime of Arrival: {(route[0]%1440)//60}:{(route[0]%1440)%60:02d} ({route[0]//1440} Days Elapsed)")
+        print(f"Time Required: {total_distance} mins")
         print(f"Total Cost: ${total_cost}")
-        print(f"Maximum Wait Time: {total_wait_time} mins")
 
         print("\nDetails:")
 
@@ -48,9 +46,9 @@ def print_path(result):
 
             print(f"{previous_city} -> {current_city}")
             print(f"Mode of Transport: {segment.mode}")
-            print(f"Time Required: {segment.distance} mins")
+            print(f"Time Required: {path[j][1]} mins")
             print(f"Cost: ${segment.cost}")
-            print(f"Wait Time: {segment.wait_time} mins")
+            print(f"Wait Time: {path[j][1] - segment.distance} mins")
             print("-" * 20)
 
         print()

@@ -36,33 +36,43 @@ def createnetwork(a, trans, dataset):
     return data, edgeid
 
 
-def djikstras(start, end, e):
+def djikstras(start, end, time, e, eid):
     if start == end:
-        return [0, [[start, 0, 0]]]
+        return [time, [[start, 0, 0]]]
     heap = []
     visited = dict()
 
-    heapq.heappush(heap, (0, [[start, 0, 0]]))
-    visited[start] = 0
+    heapq.heappush(heap, (time, [[start, 0, 0]]))
+    visited[start] = time
 
     while heap:
-        dist, route = heapq.heappop(heap)
+        curt, route = heapq.heappop(heap) #current time, list route
 
         if route[-1][0] == end:
-            return [dist, route]
+            return [curt, route]
         
         for dest, w, edge_id in e[route[-1][0]]: #destination, weight, edgeid
-            newdist = dist + w
-            if dest not in visited or newdist < visited[dest]:
-                visited[dest] = newdist
-                heapq.heappush(heap, (newdist, route + [[dest, w, edge_id]]))
+            newtime = curt + w
+
+            #this part calculates the delay from wait times
+            starting = eid[edge_id].start_time
+            ending = eid[edge_id].end_time
+            interval = eid[edge_id].wait_time
+            if (starting > (curt%1440)): newtime += starting - (curt%1440)
+            if (ending < (curt%1440)): newtime += starting + 1440 - (curt%1440)
+            if (starting < (curt%1440) < ending) and (((curt%1440) - starting)%interval)!= 0: 
+                newtime += interval - ((curt%1440) - starting)%interval
+
+            if dest not in visited or newtime < visited[dest]:
+                visited[dest] = newtime
+                heapq.heappush(heap, (newtime, route + [[dest, newtime - curt, edge_id]]))
                 
     return [-1, ["No Route"]]
 
 
-def yens(start, end, e):
+def yens(start, end, time, e, eid):
     paths = []  
-    paths.append(djikstras(start, end, e))
+    paths.append(djikstras(start, end, time, e, eid))
     if paths[-1][0] == -1:
         return -1
     potential = []
@@ -72,7 +82,7 @@ def yens(start, end, e):
             root = paths[-1][1][:j + 1]
             newe = copy.deepcopy(e)
 
-            rootw = sum(step[1] for step in root) #rootweight
+            rootw = time + sum(step[1] for step in root) #rootweight
 
             # remove instances of previous paths
             for dist, path in paths:
@@ -81,12 +91,12 @@ def yens(start, end, e):
                     end_id = path[j+1][2]
                     newe[start_a] = [edge for edge in newe[start_a] if end_id != edge[2]]
 
-            w, r = djikstras(spur, end, newe)
+            w, r = djikstras(spur, end, rootw, newe, eid)
 
             if w == -1:
                 continue
 
-            heapq.heappush(potential, [w + rootw, root + r[1:]])
+            heapq.heappush(potential, [w, root + r[1:]])
 
         if potential:
             dist, new_path = heapq.heappop(potential)
@@ -97,13 +107,14 @@ def yens(start, end, e):
     return paths
 
 
-def startfind(start, end, option, transtype, adjlist):
+def startfind(start, end, time, option, transtype, adjlist):
     # start and end refer to destination
+    # time refers to the time of departure  
     # option is customization
     # transtype is list of banned transportation
     # adjlist is the adjacency list
 
     network, edgeid = createnetwork(option, transtype, adjlist)
-    routes = yens(start, end, network)
+    routes = yens(start, end, time, network, edgeid)
 
     return routes, edgeid
