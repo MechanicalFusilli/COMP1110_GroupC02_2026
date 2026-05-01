@@ -32,7 +32,7 @@ def print_path(result):
 
         # 🔥 totals now here
         print(f"\nTime Required: {total_distance} mins")
-        print(f"Cost: ${total_cost}")
+        print(f"Total Cost: ${total_cost}")
 
         print("\nDetails:")
 
