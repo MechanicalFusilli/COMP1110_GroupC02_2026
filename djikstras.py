@@ -65,9 +65,8 @@ def yens(start, end, e):
     paths.append(djikstras(start, end, e))
     if paths[-1][0] == -1:
         return -1
-
+    potential = []
     for i in range(1, 3):
-        potential = []
         for j in range(len(paths[-1][1]) - 1):
             spur = paths[-1][1][j][0]
             root = paths[-1][1][:j + 1]
@@ -81,18 +80,13 @@ def yens(start, end, e):
                     start_a = path[j][0]
                     end_id = path[j+1][2]
                     newe[start_a] = [edge for edge in newe[start_a] if end_id != edge[2]]
-                    
-            # remove root nodes
-            for step in root[:-1]:
-                node = step[0]
-                newe[node] = []
 
             w, r = djikstras(spur, end, newe)
 
             if w == -1:
                 continue
 
-            heapq.heappush(potential, [w + rootw, root[:-1] + r])
+            heapq.heappush(potential, [w + rootw, root + r[1:]])
 
         if potential:
             dist, new_path = heapq.heappop(potential)
