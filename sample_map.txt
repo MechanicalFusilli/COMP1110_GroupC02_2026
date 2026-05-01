@@ -21,7 +21,6 @@ mtr, 2, 4
 walk, 15, 0
 hku, har, 1, 2
 bus, 25, 10
-walk, 18, 0
 hku, tks, 1, 1
 bus, 26, 12
 hku, mgk, 1, 2

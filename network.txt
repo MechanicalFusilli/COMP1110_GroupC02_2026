@@ -1,4 +1,4 @@
-N
+9, 4, 15
 hku
 cen
 ken
@@ -8,22 +8,46 @@ tsq
 cwb
 tks
 mgk
-S
-tks cwb mtr is 9
-cwb cen mtr is 7
-mgk tst mtr tw 5
-ken hku mtr is 2
-tst cen mtr tw 6
-cen hku mtr is 8
-cen hku bus 30x 10
-tks hku bus 33x 26
-har hku bus 973 25
-mgk hku bus 970 28
-mgk hku bus 970x 28
-cen hku mbus 8x 9
-cen hku mbus 22 9
-cwb hku mbus 10 29
-cwb hku mbus 31 29
-ken hku walk n 15
-har tst walk n 7
-tsq cwb walk n 5
+mtr
+bus
+mbus
+walk
+hku, cen, 1, 3
+mtr, 8, 5, 3
+bus, 10, 6, 15
+mbus, 9, 7, 10
+hku, ken, 1, 2
+mtr, 2, 4, 3
+walk, 15, 0, 0
+hku, har, 1, 1
+bus, 25, 10, 30
+hku, tks, 1, 1
+bus, 26, 12, 20
+hku, mgk, 1, 2
+bus, 28, 13, 20
+bus, 28, 13, 20
+cen, cwb, 1, 2
+mtr, 7, 5, 3
+mbus, 12, 8, 10
+cen, tst, 1, 2
+mtr, 6, 5, 3
+bus, 15, 8, 15
+tst, mgk, 1, 2
+mtr, 5, 5, 3
+bus, 12, 7, 20
+tst, har, 1, 1
+walk, 7, 0, 0
+tsq, cwb, 1, 1
+walk, 5, 0, 0
+tks, cwb, 1, 2
+mtr, 9, 5, 3
+bus, 16, 8, 15
+ken, cen, 1, 2
+mtr, 10, 5, 3
+bus, 14, 7, 15
+ken, cwb, 1, 1
+bus, 20, 9, 20
+har, cen, 1, 1
+bus, 18, 8, 30
+mgk, tks, 1, 1
+bus, 10, 6, 20

@@ -3,14 +3,18 @@ import os
 from db import Seg
 from djikstras import startfind
 
+
 class NetworkLoadError(Exception):
     pass
+
 
 class NetworkFormatError(NetworkLoadError):
     pass
 
+
 class NetworkValidationError(NetworkLoadError):
     pass
+
 
 def main():
     try:
@@ -70,7 +74,7 @@ class NetworkSystem:
     # Returns a NetworkSystem object
     @classmethod
     def load_network(cls, filename="network.txt"):
-        delimiter = ', '
+        delimiter = ", "
         file_path = os.path.join(os.path.dirname(__file__), filename)
 
         try:
@@ -79,7 +83,9 @@ class NetworkSystem:
         except FileNotFoundError as e:
             raise NetworkLoadError(f"File '{filename}' was not found.") from e
         except PermissionError as e:
-            raise NetworkLoadError(f"Permission denied while opening '{filename}'.") from e
+            raise NetworkLoadError(
+                f"Permission denied while opening '{filename}'."
+            ) from e
         except OSError as e:
             raise NetworkLoadError(f"Could not open '{filename}': {e}") from e
 
@@ -100,8 +106,11 @@ class NetworkSystem:
                 "The file does not contain enough lines based on the counts in the first line."
             )
 
-        vertices = [l.strip() for l in contents[1: vertices_count + 1]]
-        transport_modes = [l.strip() for l in contents[vertices_count + 1: transport_count + vertices_count + 1]]
+        vertices = [l.strip() for l in contents[1 : vertices_count + 1]]
+        transport_modes = [
+            l.strip()
+            for l in contents[vertices_count + 1 : transport_count + vertices_count + 1]
+        ]
 
         if not cls.validate_list(vertices, delimiter):
             raise NetworkValidationError(
@@ -114,7 +123,7 @@ class NetworkSystem:
             )
 
         segments = []
-        remaining_lines = contents[transport_count + vertices_count + 1:]
+        remaining_lines = contents[transport_count + vertices_count + 1 :]
 
         subpaths = 0
         bidirectional = 0
@@ -123,8 +132,7 @@ class NetworkSystem:
         main_paths_read = 0
 
         for line_number, raw_line in enumerate(
-            remaining_lines,
-            start=vertices_count + transport_count + 2
+            remaining_lines, start=vertices_count + transport_count + 2
         ):
             line = raw_line.strip().split(delimiter)
 
@@ -152,11 +160,15 @@ class NetworkSystem:
                         f"Invalid subpath line at line {line_number}: '{raw_line.strip()}'."
                     )
 
-                new_seg = Seg(start, dest, line[0], int(line[1]), int(line[2]))
+                new_seg = Seg(
+                    start, dest, line[0], int(line[1]), int(line[2]), int(line[3])
+                )
                 segments.append(new_seg)
 
                 if bidirectional:
-                    new_seg = Seg(dest, start, line[0], int(line[1]), int(line[2]))
+                    new_seg = Seg(
+                        dest, start, line[0], int(line[1]), int(line[2]), int(line[3])
+                    )
                     segments.append(new_seg)
 
                 subpaths -= 1
@@ -202,7 +214,7 @@ class NetworkSystem:
         # Any line is empty
         if not all([x.strip() for x in lst]):
             return False
-        
+
         # Any duplicates (not case sensitive)
         if not (len(set(map(lambda x: x.lower(), lst))) == len(lst)):
             return False
@@ -235,20 +247,20 @@ class NetworkSystem:
 
     @staticmethod
     def validate_subpath_line(line: list, transport_modes: list):
-        # Not 3 items
-        if len(line) != 3:
+        # Not 4 items
+        if len(line) != 4:
             return False
 
         # First item not in transport modes
         if line[0] not in transport_modes:
             return False
 
-        # Last two parts aren't integers
-        if not (line[1].isdecimal() and line[2].isdecimal()):
+        # Last three parts aren't integers
+        if not (line[1].isdecimal() and line[2].isdecimal() and line[3].isdecimal()):
             return False
 
-        # Negative cost/time (zero is allowed here)
-        if int(line[1]) < 0 or int(line[2]) < 0:
+        # Negative cost/time/wait time (zero is allowed here)
+        if int(line[1]) < 0 or int(line[2]) < 0 or int(line[3]) < 0:
             return False
 
         return True
