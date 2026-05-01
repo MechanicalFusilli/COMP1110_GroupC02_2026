@@ -8,7 +8,6 @@ def print_path(result):
     print("\n=== ROUTES ===\n")
 
     for i, route in enumerate(routes, 1):
-        total_weight = route[0]
         path = route[1]
 
         print(f"Route {i}:")
@@ -20,30 +19,34 @@ def print_path(result):
         for step in path:
             city_names.append(step[0])
 
+        # Calculate totals first
+        for j in range(1, len(path)):
+            edge_id = path[j][2]
+            segment = edgeid[edge_id]
+
+            total_distance += segment.distance
+            total_cost += segment.cost
+
         print("Cities:")
         print(" -> ".join(city_names))
+
+        # 🔥 totals now here
+        print(f"\nTotal Distance: {total_distance} km")
+        print(f"Total Cost: ${total_cost}")
 
         print("\nDetails:")
 
         for j in range(1, len(path)):
             previous_city = path[j - 1][0]
             current_city = path[j][0]
-            weight = path[j][1]
             edge_id = path[j][2]
 
             segment = edgeid[edge_id]
 
-            total_distance += segment.distance
-            total_cost += segment.cost
-
             print(f"{previous_city} -> {current_city}")
             print(f"Mode of Transport: {segment.mode}")
-            print(f"Distance: {segment.distance}")
-            print(f"Cost: {segment.cost}")
-            print(f"Weight Used: {weight}")
+            print(f"Distance: {segment.distance} km")
+            print(f"Cost: ${segment.cost}")
             print("-" * 20)
 
-        print(f"Total Distance: {total_distance}")
-        print(f"Total Cost: {total_cost}")
-        print(f"Optimised Total: {total_weight}")
         print()
