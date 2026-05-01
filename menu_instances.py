@@ -98,7 +98,7 @@ class MenuSystem:
         options_dict = {
             "Cheapest": lambda: set_preference(0),
             "Fastest": lambda: set_preference(1),
-            "Fewest": lambda: set_preference(-1),
+            "Fewest Segments/Edges": lambda: set_preference(-1),
         }
 
         self.preference_menu = MenuPage(
