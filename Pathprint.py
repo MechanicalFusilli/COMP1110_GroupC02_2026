@@ -31,7 +31,7 @@ def print_path(result):
         print(" -> ".join(city_names))
 
         # 🔥 totals now here
-        print(f"\nTotal Distance: {total_distance} km")
+        print(f"\nTime Required: {total_distance} mins")
         print(f"Total Cost: ${total_cost}")
 
         print("\nDetails:")
