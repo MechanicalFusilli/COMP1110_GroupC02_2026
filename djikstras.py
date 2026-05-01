@@ -92,7 +92,7 @@ def yens(start, end, e):
             if w == -1:
                 continue
 
-            heapq.heappush(potential, [w + rootw, root + r[1:]])
+            heapq.heappush(potential, [w + rootw, root[:-1] + r])
 
         if potential:
             dist, new_path = heapq.heappop(potential)
