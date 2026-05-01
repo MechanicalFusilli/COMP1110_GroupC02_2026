@@ -37,7 +37,8 @@ class NetworkSystem:
 
         # Settings set to default
         self.settings = {
-            "preference": 0,
+            "preference": 1,
+            "time": 0,
             "avoid_modes": [],
             "start": None,
             "end": None,
