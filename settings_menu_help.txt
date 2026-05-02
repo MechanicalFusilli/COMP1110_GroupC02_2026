@@ -2,8 +2,8 @@
 Set Start: set the starting location for the pathfinder
 Set End: set the destination for the pathfinder
 Set Time of Departure: set the time of departure for the pathfinder
-Preference: choose whether the best route is determined by being the cheapest, fastest or having the fewest segments
-Set Avoid Modes: Set which modes of transport to avoid
+Preference: choose whether the best route is determined by being the cheapest (in cost), fastest (in duration) or having the fewest segments
+Set Avoid Modes: Set which modes of transport to avoid and ban
 Clear Preferences: Clear start, end and avoid modes
 Print Settings: Print the above settings
 Help: Print this page
