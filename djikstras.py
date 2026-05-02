@@ -54,14 +54,15 @@ def djikstras(start, end, time, e, eid):
         for dest, w, edge_id in e[route[-1][0]]: #destination, weight, edgeid
             newtime = curt + w
 
-            #this part calculates the delay from wait times
-            starting = eid[edge_id].start_time
-            ending = eid[edge_id].end_time
-            interval = eid[edge_id].wait_time
-            if (starting > (curt%1440)): newtime += starting - (curt%1440)
-            if (ending < (curt%1440)): newtime += starting + 1440 - (curt%1440)
-            if (starting < (curt%1440) < ending) and (((curt%1440) - starting)%interval)!= 0: 
-                newtime += interval - ((curt%1440) - starting)%interval
+            if opt == 1:
+                #this part calculates the delay from wait times
+                starting = eid[edge_id].start_time
+                ending = eid[edge_id].end_time
+                interval = eid[edge_id].wait_time
+                if (starting > (curt%1440)): newtime += starting - (curt%1440)
+                if (ending < (curt%1440)): newtime += starting + 1440 - (curt%1440)
+                if (starting < (curt%1440) < ending) and (((curt%1440) - starting)%interval)!= 0: 
+                    newtime += interval - ((curt%1440) - starting)%interval
 
             if dest not in visited or newtime < visited[dest]:
                 visited[dest] = newtime
@@ -70,9 +71,9 @@ def djikstras(start, end, time, e, eid):
     return [-1, ["No Route"]]
 
 
-def yens(start, end, time, e, eid):
+def yens(start, end, time, e, eid, opt):
     paths = []  
-    paths.append(djikstras(start, end, time, e, eid))
+    paths.append(djikstras(start, end, time, e, eid, opt))
     if paths[-1][0] == -1:
         return -1
     potential = []
@@ -91,7 +92,7 @@ def yens(start, end, time, e, eid):
                     end_id = path[j+1][2]
                     newe[start_a] = [edge for edge in newe[start_a] if end_id != edge[2]]
 
-            w, r = djikstras(spur, end, rootw, newe, eid)
+            w, r = djikstras(spur, end, rootw, newe, eid, opt)
 
             if w == -1:
                 continue
@@ -115,6 +116,6 @@ def startfind(start, end, time, option, transtype, adjlist):
     # adjlist is the adjacency list
 
     network, edgeid = createnetwork(option, transtype, adjlist)
-    routes = yens(start, end, time, network, edgeid)
+    routes = yens(start, end, time, network, edgeid, option)
 
     return routes, edgeid
