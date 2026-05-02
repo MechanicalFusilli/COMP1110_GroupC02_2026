@@ -13,8 +13,9 @@ def print_path(result, time):
         print(f"Route {i}:")
 
         city_names = []
-        total_distance = 0
+        total_distance = time
         total_cost = 0
+        distancelist = []
 
         for step in path:
             city_names.append(step[0])
@@ -23,16 +24,25 @@ def print_path(result, time):
         for j in range(1, len(path)):
             edge_id = path[j][2]
             segment = edgeid[edge_id]
+            #wait time calculation
+            stime = segment.start_time
+            etime = segment.end_time
+            ival = segment.wait_time
+            rtime = total_distance%1440
+            if (rtime < stime): wtime = stime - rtime
+            if (etime < rtime): wtime = stime + 1440 - rtime
+            if (stime < rtime < etime): wtime = ival - ((rtime - stime)%ival)
 
-            total_distance += path[j][1]
+            total_distance += segment.distance + wtime
+            distancelist.append(segment.distance + wtime)
             total_cost += segment.cost
 
         print("Cities:")
         print(" -> ".join(city_names))
 
         # 🔥 totals now here
-        print(f"\nTime of Arrival: {(route[0]%1440)//60}:{(route[0]%1440)%60:02d} ({route[0]//1440} Days Elapsed)")
-        print(f"Time Required: {total_distance} mins")
+        print(f"\nTime of Arrival: {(total_distance%1440)//60}:{(total_distance%1440)%60:02d} ({total_distance//1440} Days Elapsed)")
+        print(f"Time Required: {total_distance - time} mins")
         print(f"Total Cost: ${total_cost}")
 
         print("\nDetails:")
@@ -46,9 +56,10 @@ def print_path(result, time):
 
             print(f"{previous_city} -> {current_city}")
             print(f"Mode of Transport: {segment.mode}")
-            print(f"Time Required: {path[j][1]} mins")
+            print(f"Time Required: {distancelist[j-1]} mins")
             print(f"Cost: ${segment.cost}")
-            print(f"Wait Time: {path[j][1] - segment.distance} mins")
+            print(f"Wait Time: {distancelist[j-1] - segment.distance} mins")
+            print(f"Transport Time: {segment.distance} mins")
             print("-" * 20)
 
         print()
